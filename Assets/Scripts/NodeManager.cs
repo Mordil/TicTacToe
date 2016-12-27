@@ -70,29 +70,33 @@ public class NodeManager : MonoBehaviour
 
     private void Update()
     {
-        bool hasMatchingRow = CheckArrayForMatches(_rows);
+        if (GameplayManager.Instance.IsGameOver)
+        {
+            return;
+        }
 
+        NodeArray matchingArray;
+
+        bool hasMatchingRow = CheckArrayForMatches(_rows, out matchingArray);
         if (!hasMatchingRow)
         {
-            bool hasMatchingColumn = CheckArrayForMatches(_columns);
-
+            bool hasMatchingColumn = CheckArrayForMatches(_columns, out matchingArray);
             if (!hasMatchingColumn)
             {
-                bool hasMatchingDiagonal = CheckArrayForMatches(_diagonals);
-
+                bool hasMatchingDiagonal = CheckArrayForMatches(_diagonals, out matchingArray);
                 if (hasMatchingDiagonal)
                 {
-                    Debug.Log("Matching Diagonal!");
+                    GameplayManager.Instance.SetPlayerHasWon(matchingArray.MatchingIcon);
                 }
             }
             else
             {
-                Debug.Log("Matching Column!");
+                GameplayManager.Instance.SetPlayerHasWon(matchingArray.MatchingIcon);
             }
         }
         else
         {
-            Debug.Log("Matching Row!");
+            GameplayManager.Instance.SetPlayerHasWon(matchingArray.MatchingIcon);
         }
     }
 
@@ -142,13 +146,16 @@ public class NodeManager : MonoBehaviour
         _diagonals[1].Nodes = nodes;
     }
 
-    private bool CheckArrayForMatches(NodeArray[] arrayToCheck)
+    private bool CheckArrayForMatches(NodeArray[] arrayToCheck, out NodeArray matchingArray)
     {
+        matchingArray = null;
+
         foreach (NodeArray array in arrayToCheck)
         {
             if (array.AllNodesMatch() &&
                 array.MatchingIcon != Node.Icon.None)
             {
+                matchingArray = array;
                 return true;
             }
         }
