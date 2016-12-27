@@ -16,6 +16,7 @@ public class GameplayManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        ActivePlayerID = 1;
     }
 
     public void EndTurn()
@@ -30,5 +31,12 @@ public class GameplayManager : MonoBehaviour
 
         WinText.gameObject.SetActive(true);
         WinText.text = string.Format("Player {0} Wins!", WinningPlayerID);
+
+        Invoke("ResetLevel", 5f);
+    }
+
+    private void ResetLevel()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 }
