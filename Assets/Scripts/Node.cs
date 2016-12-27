@@ -28,7 +28,7 @@ public class Node : MonoBehaviour
         else
         {
             OIcon.gameObject.SetActive(true);
-            VisibleIcon = Icon.X;
+            VisibleIcon = Icon.O;
         }
 
         this.enabled = false;

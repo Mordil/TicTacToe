@@ -9,11 +9,39 @@ public class NodeManager : MonoBehaviour
     {
         public const int ARRAY_LENGTH = 3;
 
+        public Node.Icon MatchingIcon { get; private set; }
+        
         public Node[] Nodes;
 
         public NodeArray()
         {
             Nodes = new Node[ARRAY_LENGTH];
+        }
+
+        public bool AllNodesMatch()
+        {
+            int count = 0;
+            Node.Icon comparisonIcon = Node.Icon.None;
+
+            foreach (Node node in Nodes)
+            {
+                if (comparisonIcon != node.VisibleIcon)
+                {
+                    comparisonIcon = node.VisibleIcon;
+                    count = 0;
+                }
+
+                count++;
+            }
+
+            var allMatch = count == ARRAY_LENGTH;
+
+            if (allMatch)
+            {
+                MatchingIcon = comparisonIcon;
+            }
+
+            return allMatch;
         }
     }
     
@@ -40,27 +68,30 @@ public class NodeManager : MonoBehaviour
 
     private void Update()
     {
-        //int count = 0;
-        //Node.Icon comparisonIcon = Node.Icon.None;
-        //foreach (Node node in (_nodes.SelectMany(x => x.Nodes).ToList()))
-        //{
-        //    if (comparisonIcon != node.VisibleIcon)
-        //    {
-        //        comparisonIcon = node.VisibleIcon;
-        //        count = 0;
-        //    }
+        bool hasMatchingRow = CheckArrayForMatches(_rows);
 
-        //    count++;
-        //}
+        if (!hasMatchingRow)
+        {
+            bool hasMatchingColumn = CheckArrayForMatches(_columns);
 
-        //if (count == 3)
-        //{
-        //    Debug.Log("DING!");
-        //}
-        //else
-        //{
-        //    Debug.Log("FAIL");
-        //}
+            if (!hasMatchingColumn)
+            {
+                bool hasMatchingDiagonal = CheckArrayForMatches(_diagonals);
+
+                if (hasMatchingDiagonal)
+                {
+                    Debug.Log("Matching Diagonal!");
+                }
+            }
+            else
+            {
+                Debug.Log("Matching Column!");
+            }
+        }
+        else
+        {
+            Debug.Log("Matching Row!");
+        }
     }
 
     private void SetupRows(Node[] nodeList)
@@ -101,18 +132,33 @@ public class NodeManager : MonoBehaviour
         nodes[1] = nodeList[4];
         nodes[2] = nodeList[8];
         _diagonals[0].Nodes = nodes;
-        
+
+        nodes = new Node[3];
         nodes[0] = nodeList[2];
         nodes[1] = nodeList[4];
         nodes[2] = nodeList[6];
         _diagonals[1].Nodes = nodes;
     }
 
+    private bool CheckArrayForMatches(NodeArray[] arrayToCheck)
+    {
+        foreach (NodeArray array in arrayToCheck)
+        {
+            if (array.AllNodesMatch() &&
+                array.MatchingIcon != Node.Icon.None)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private NodeArray[] GetInitializedNodeArray(int size = 3)
     {
         var arrayToReturn = new NodeArray[size];
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < size; i++)
         {
             arrayToReturn[i] = new NodeArray();
         }
