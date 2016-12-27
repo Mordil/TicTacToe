@@ -35,7 +35,6 @@ public class NodeManager : MonoBehaviour
             }
 
             var allMatch = count == ARRAY_LENGTH;
-
             if (allMatch)
             {
                 MatchingIcon = comparisonIcon;
@@ -54,13 +53,16 @@ public class NodeManager : MonoBehaviour
 
     private void Start()
     {
+        // find all nodes in the scene
         var allNodes = GetComponentsInChildren<Node>();
 
+        // set their names to match what we need in code for runtime validation
         for (int i = 1; i < allNodes.Length; i++)
         {
             allNodes[i].gameObject.name = String.Format("Node {0}", i);
         }
 
+        // setup references that match a tic-tac-toe model
         SetupRows(allNodes);
         SetupColumns(allNodes);
         SetupDiagonals(allNodes);

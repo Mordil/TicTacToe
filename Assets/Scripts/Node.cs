@@ -19,8 +19,8 @@ public class Node : MonoBehaviour
 
     public void OnClick()
     {
-        var rand = Random.Range(0, 2);
-        if (rand == 1)
+        // determine which icon to set based on who is the active player
+        if (GameplayManager.Instance.ActivePlayerID == 1)
         {
             XIcon.gameObject.SetActive(true);
             VisibleIcon = Icon.X;
@@ -30,7 +30,11 @@ public class Node : MonoBehaviour
             OIcon.gameObject.SetActive(true);
             VisibleIcon = Icon.O;
         }
+        
+        // ends the current player's turn
+        GameplayManager.Instance.EndTurn();
 
+        // disable this script component to no longer listen for OnClick calls
         this.enabled = false;
     }
 }
